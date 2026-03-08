@@ -32,19 +32,19 @@ int main()
                 break;
 
             case 2:
-                cbc_mode();
+                //cbc_mode();
                 break;
 
             case 3:
-                cfb_mode();
+                //cfb_mode();
                 break;
 
             case 4:
-                ofb_mode();
+                //ofb_mode();
                 break;
 
             case 5:
-                ctr_mode();
+                //ctr_mode();
                 break;
 
             case 0:
