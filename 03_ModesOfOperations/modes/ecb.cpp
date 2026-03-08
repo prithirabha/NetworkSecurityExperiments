@@ -2,9 +2,11 @@
 
 #include <iostream>
 #include <string>
+#include <limits>
 
 #include "../crypto_utils.hpp"
 #include "../aes/aes_wrapper.hpp"
+
 
 /* ======================
    ECB Encryption
@@ -67,18 +69,20 @@ void ecb_mode()
     std::cout << "1. Encrypt\n2. Decrypt\n";
     std::cin >> op;
 
+    // This is required to not get an empty space insert in input.
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
     std::string input;
+
     while (true)
     {
         std::cout << "Enter text: ";
-        std::cin >> input;
+        std::getline(std::cin, input);
 
-        data = std::vector<uint8_t>(input.begin(), input.end());
-
-        if (op == 1)   // encryption always allowed
+        if (op == 1)
             break;
 
-        if (data.size() % AES_BLOCK_SIZE == 0)
+        if ((input.size() % 2 == 0) && ((input.size()/2) % AES_BLOCK_SIZE == 0))
             break;
 
         std::cout << "Error: Ciphertext length must be a multiple of "
@@ -101,7 +105,13 @@ void ecb_mode()
         std::cout << "Please try again.\n";
     }
 
-    std::vector<uint8_t> data(input.begin(), input.end());
+    std::vector<uint8_t> data;
+
+    if (op == 1)
+        data = std::vector<uint8_t>(input.begin(), input.end());
+    else
+        data = hex_to_bytes(input);
+    
     std::vector<uint8_t> key(key_str.begin(), key_str.end());
 
     std::vector<uint8_t> result;
@@ -111,10 +121,23 @@ void ecb_mode()
     else
         result = ecb_decrypt(data, key);
 
-    std::cout << "Result: ";
+    std::cout << "Result: \n";
 
-    for (uint8_t b : result)
-        std::cout << static_cast<char>(b);
+    if (op == 1)
+    {
+        std::string hex = bytes_to_hex(result);
+
+        for (size_t i = 0; i < hex.size(); i += 32)
+        {
+            std::cout << "Block " << (i / 32) + 1 << ": "
+                    << hex.substr(i, 32) << "\n";
+        }
+    }
+    else
+    {
+        for (uint8_t b : result)
+            std::cout << static_cast<char>(b);
+    }
 
     std::cout << "\n";
 }
