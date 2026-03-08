@@ -4,7 +4,6 @@
 
 #include <vector>
 #include <cstdint> // For using fixed sized integer types.
-#include <stdexcept> // To handle errors/exceptions.
 
 // Declare AES block size to remain constant/fixed throughout.
 constexpr size_t AES_BLOCK_SIZE = 16; 
