@@ -1,5 +1,7 @@
 #include "crypto_utils.hpp"
 #include <stdexcept>
+#include <sstream>
+#include <iomanip>
 
 /* ===================================
 *   XOR operation of equal block size
@@ -123,4 +125,38 @@ void validate_block_size(const std::vector<uint8_t>& block)
 {
     if (block.size() != AES_BLOCK_SIZE)
         throw std::invalid_argument("Invalid AES block size.");
+}
+
+
+/* =======================
+*   Hex to Bytes helper
+   ======================= */
+   
+std::vector<uint8_t> hex_to_bytes(const std::string& hex)
+{
+    if (hex.length() % 2 != 0)
+        throw std::invalid_argument("Hex string must have even length");
+
+    std::vector<uint8_t> bytes;
+
+    for (size_t i = 0; i < hex.length(); i += 2)
+    {
+        std::string byte_str = hex.substr(i, 2);
+        uint8_t byte = static_cast<uint8_t>(std::stoi(byte_str, nullptr, 16));
+        bytes.push_back(byte);
+    }
+
+    return bytes;
+}
+
+std::string bytes_to_hex(const std::vector<uint8_t>& bytes)
+{
+    std::ostringstream oss;
+
+    oss << std::hex << std::setfill('0');
+
+    for (uint8_t b : bytes)
+        oss << std::setw(2) << static_cast<int>(b);
+
+    return oss.str();
 }

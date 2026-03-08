@@ -4,6 +4,8 @@
 
 #include <vector>
 #include <cstdint> // For using fixed sized integer types.
+#include <sstream>
+#include <iomanip>
 
 // Declare AES block size to remain constant/fixed throughout.
 constexpr size_t AES_BLOCK_SIZE = 16; 
@@ -49,5 +51,12 @@ std::vector<uint8_t> merge_blocks(
 *  ====================== */
 
 void validate_block_size(const std::vector<uint8_t>& block);
+
+
+/* =======================
+*   Hex to Bytes helper
+*  ======================= */
+std::vector<uint8_t> hex_to_bytes(const std::string& hex);
+std::string bytes_to_hex(const std::vector<uint8_t>& bytes);
 
 #endif
