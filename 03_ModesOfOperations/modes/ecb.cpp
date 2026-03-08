@@ -68,12 +68,38 @@ void ecb_mode()
     std::cin >> op;
 
     std::string input;
-    std::cout << "Enter text: ";
-    std::cin >> input;
+    while (true)
+    {
+        std::cout << "Enter text: ";
+        std::cin >> input;
+
+        data = std::vector<uint8_t>(input.begin(), input.end());
+
+        if (op == 1)   // encryption always allowed
+            break;
+
+        if (data.size() % AES_BLOCK_SIZE == 0)
+            break;
+
+        std::cout << "Error: Ciphertext length must be a multiple of "
+                << AES_BLOCK_SIZE << " bytes.\n";
+        std::cout << "Please try again.\n";
+    }
 
     std::string key_str;
-    std::cout << "Enter 16-byte key: ";
-    std::cin >> key_str;
+
+    while (true)
+    {
+        std::cout << "Enter 16-byte key: ";
+        std::cin >> key_str;
+
+        if (key_str.size() == AES_BLOCK_SIZE)
+            break;
+
+        std::cout << "Invalid key length. AES-128 requires exactly "
+                  << AES_BLOCK_SIZE << " bytes.\n";
+        std::cout << "Please try again.\n";
+    }
 
     std::vector<uint8_t> data(input.begin(), input.end());
     std::vector<uint8_t> key(key_str.begin(), key_str.end());
