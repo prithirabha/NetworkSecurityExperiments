@@ -1,4 +1,5 @@
 #include "crypto_utils.hpp"
+#include <stdexcept>
 
 /* ===================================
 *   XOR operation of equal block size
