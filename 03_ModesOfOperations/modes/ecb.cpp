@@ -58,6 +58,47 @@ std::vector<uint8_t> ecb_decrypt(
     return pkcs7_unpad(merged);
 }
 
+/*  ======================
+*   ECB Weakness Demo
+*   ====================== */
+
+void ecb_demo()
+{
+    std::string demo_plain =
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"; // 48 A's (3 identical blocks)
+
+    std::string demo_key = "0123456789012345";
+
+    std::vector<uint8_t> data(demo_plain.begin(), demo_plain.end());
+    std::vector<uint8_t> key(demo_key.begin(), demo_key.end());
+
+    auto result = ecb_encrypt(data, key);
+
+    std::cout << "\nECB Weakness Demonstration\n";
+    std::cout << "Plaintext: " << demo_plain << "\n";
+    std::cout << "Key: " << demo_key << "\n\n";
+
+    std::cout << "Plaintext blocks:\n";
+    for (size_t i = 0; i < demo_plain.size(); i += AES_BLOCK_SIZE)
+    {
+        std::cout << "Block " << (i / AES_BLOCK_SIZE) + 1 << ": "
+                  << demo_plain.substr(i, AES_BLOCK_SIZE) << "\n";
+    }
+
+    std::cout << "\nCiphertext blocks:\n";
+
+    std::string hex = bytes_to_hex(result);
+
+    for (size_t i = 0; i < hex.size(); i += 32)
+    {
+        std::cout << "Block " << (i / 32) + 1 << ": "
+                  << hex.substr(i, 32) << "\n";
+    }
+
+    std::cout << "\nObservation: identical plaintext blocks produce identical ciphertext blocks.\n";
+}
+
+
 /* ======================
    ECB Mode Interface
    ====================== */
@@ -66,11 +107,17 @@ void ecb_mode()
 {
     int op;
     std::cout << "\nECB Mode\n";
-    std::cout << "1. Encrypt\n2. Decrypt\n";
+    std::cout << "1. Encrypt\n2. Decrypt\n3. Show ECB Weakness Demo\n";
     std::cin >> op;
 
+    if (op == 3)
+    {
+        ecb_demo();
+        return;
+    }
+
     // This is required to not get an empty space insert in input.
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     std::string input;
 
@@ -121,17 +168,11 @@ void ecb_mode()
     else
         result = ecb_decrypt(data, key);
 
-    std::cout << "Result: \n";
+    std::cout << "Result: ";
 
     if (op == 1)
     {
-        std::string hex = bytes_to_hex(result);
-
-        for (size_t i = 0; i < hex.size(); i += 32)
-        {
-            std::cout << "Block " << (i / 32) + 1 << ": "
-                    << hex.substr(i, 32) << "\n";
-        }
+        std::cout << bytes_to_hex(result);
     }
     else
     {
