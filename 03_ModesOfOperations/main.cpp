@@ -44,7 +44,7 @@ int main()
                 break;
 
             case 5:
-                //ctr_mode();
+                ctr_mode();
                 break;
 
             case 0:
