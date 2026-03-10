@@ -124,7 +124,9 @@ void cbc_bitflip_demo()
 {
     std::cout << "\n=== CBC Bit-Flipping Attack Demo ===\n";
 
-    std::string plaintext = "user=guest;admin=false;";
+    // First block filler so "user" is in block 2
+    std::string plaintext = "AAAAAAAAAAAAAAAArole=user;access=limited;";
+
     std::string key_str = "0123456789012345";
     std::string iv_str  = "1234567890123456";
 
@@ -135,34 +137,33 @@ void cbc_bitflip_demo()
     auto ciphertext = cbc_encrypt(data, key, iv);
 
     std::cout << "\nOriginal plaintext:\n";
-    std::cout << plaintext << "\n";
+    std::cout << plaintext.substr(16) << "\n";  // hide filler block
 
     /* --------------------------------------------------
        CBC Bit-Flipping Attack
 
-       Decryption formula:
-           Pi = AES^-1(Ci) XOR Ci-1
+       Pi = AES^-1(Ci) XOR Ci-1
 
-       If attacker modifies Ci-1,
-       the same bits flip in Pi.
+       By modifying Ci-1 we can control bytes in Pi.
     -------------------------------------------------- */
 
-    size_t target = plaintext.find("false");
+    size_t target = plaintext.find("user");
 
-    ciphertext[target]     ^= ('f' ^ 't');
-    ciphertext[target + 1] ^= ('a' ^ 'r');
-    ciphertext[target + 2] ^= ('l' ^ 'u');
-    ciphertext[target + 3] ^= ('s' ^ 'e');
+    size_t block_index = target / AES_BLOCK_SIZE;
+    size_t byte_offset = target % AES_BLOCK_SIZE;
 
-    /* --------------------------------------------------
-       Decrypt WITHOUT removing padding so the
-       manipulated plaintext can be displayed.
-    -------------------------------------------------- */
+    size_t prev_block_start = (block_index - 1) * AES_BLOCK_SIZE;
+
+    ciphertext[prev_block_start + byte_offset]     ^= ('u' ^ 'r');
+    ciphertext[prev_block_start + byte_offset + 1] ^= ('s' ^ 'o');
+    ciphertext[prev_block_start + byte_offset + 2] ^= ('e' ^ 'o');
+    ciphertext[prev_block_start + byte_offset + 3] ^= ('r' ^ 't');
+
+    /* Decrypt without removing padding */
 
     auto blocks = split_blocks(ciphertext);
 
     std::vector<std::vector<uint8_t>> decrypted_blocks;
-
     std::vector<uint8_t> prev = iv;
 
     for (const auto& block : blocks)
@@ -171,20 +172,20 @@ void cbc_bitflip_demo()
         auto plain = xor_blocks(decrypted, prev);
 
         decrypted_blocks.push_back(plain);
-
         prev = block;
     }
-
+0
     auto merged = merge_blocks(decrypted_blocks);
 
+    std::string result(merged.begin(), merged.end());
+
     std::cout << "\nPlaintext after attack:\n";
-
-    for (auto b : merged)
-        std::cout << static_cast<char>(b);
-
-    std::cout << "\n";
+    std::cout << result.substr(16) << "\n"; // hide corrupted filler block
 }
 
+/* 
+
+*/
 
 /* ======================
    CBC Mode Interface
