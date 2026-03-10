@@ -32,7 +32,7 @@ int main()
                 break;
 
             case 2:
-                //cbc_mode();
+                cbc_mode();
                 break;
 
             case 3:
