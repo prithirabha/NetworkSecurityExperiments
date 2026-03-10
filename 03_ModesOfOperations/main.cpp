@@ -40,7 +40,7 @@ int main()
                 break;
 
             case 4:
-                //ofb_mode();
+                ofb_mode();
                 break;
 
             case 5:
