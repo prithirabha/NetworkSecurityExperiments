@@ -43,8 +43,7 @@ std::vector<uint8_t> pkcs7_pad(
 
     std::vector<uint8_t> padded = data;
 
-    for (size_t i = 0; i < padding_len; ++i)
-        padded.push_back(static_cast<uint8_t>(padding_len));
+    padded.insert(padded.end(), padding_len, static_cast<uint8_t>(padding_len));
 
     return padded;
 }
@@ -57,7 +56,7 @@ std::vector<uint8_t> pkcs7_unpad(
     if (data.empty())
         throw std::invalid_argument("Input data cannot be empty.");
 
-    uint8_t padding_len = data.back();
+    size_t padding_len = data.back();
 
     if (padding_len == 0 || padding_len > data.size())
         throw std::invalid_argument("Invalid PKCS7 padding.");
@@ -103,6 +102,7 @@ std::vector<uint8_t> merge_blocks(
 )
 {
     std::vector<uint8_t> data;
+    data.reserve(blocks.size() * AES_BLOCK_SIZE);
 
     for (const auto& block : blocks)
     {
