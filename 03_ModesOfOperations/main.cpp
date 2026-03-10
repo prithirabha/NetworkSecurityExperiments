@@ -36,7 +36,7 @@ int main()
                 break;
 
             case 3:
-                //cfb_mode();
+                cfb_mode();
                 break;
 
             case 4:
