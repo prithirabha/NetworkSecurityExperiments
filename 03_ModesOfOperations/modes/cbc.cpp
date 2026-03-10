@@ -174,7 +174,7 @@ void cbc_bitflip_demo()
         decrypted_blocks.push_back(plain);
         prev = block;
     }
-0
+    
     auto merged = merge_blocks(decrypted_blocks);
 
     std::string result(merged.begin(), merged.end());
