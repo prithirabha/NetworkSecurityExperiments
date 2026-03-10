@@ -25,6 +25,16 @@ std::vector<uint8_t> cbc_decrypt(
     const std::vector<uint8_t>& iv
 );
 
+/* ===========================
+   CBC Error Propagation Demo
+   =========================== */
+void cbc_error_demo();
+
+/* ===========================
+   CBC Bit-Flipping Attack Demo
+   =========================== */
+void cbc_bitflip_demo();
+
 
 /* ======================
    CBC Mode Interface
