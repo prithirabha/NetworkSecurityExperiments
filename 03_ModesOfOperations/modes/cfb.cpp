@@ -75,6 +75,110 @@ std::vector<uint8_t> cfb_decrypt(
     return pkcs7_unpad(merged);
 }
 
+/* ===========================
+   CFB Error Propagation Demo
+   =========================== */
+
+void cfb_error_demo()
+{
+    std::cout << "\n=== CFB Error Propagation Demo ===\n";
+
+    std::string plaintext =
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+
+    std::string key_str = "0123456789012345";
+    std::string iv_str  = "1234567890123456";
+
+    std::vector<uint8_t> key(key_str.begin(), key_str.end());
+    std::vector<uint8_t> iv(iv_str.begin(), iv_str.end());
+    std::vector<uint8_t> data(plaintext.begin(), plaintext.end());
+
+    auto ciphertext = cfb_encrypt(data, key, iv);
+
+    std::cout << "\nOriginal plaintext:\n";
+    std::cout << plaintext << "\n";
+
+    /* --------------------------------------------------
+       Introduce corruption in ciphertext
+
+       CFB property:
+       - corresponding plaintext bits flip
+       - next block becomes random
+       - later blocks recover
+    -------------------------------------------------- */
+
+    ciphertext[20] ^= 0xFF;
+
+    auto decrypted = cfb_decrypt(ciphertext, key, iv);
+
+    std::cout << "\nPlaintext after corruption:\n";
+
+    for (auto b : decrypted)
+        std::cout << static_cast<char>(b);
+
+    std::cout << "\n";
+}
+
+/* ===========================
+   CFB Malleability Demo
+   =========================== */
+
+void cfb_bitflip_demo()
+{
+    std::cout << "\n=== CFB Malleability Demo ===\n";
+
+    std::string plaintext = "access=limited;role=user";
+
+    std::string key_str = "0123456789012345";
+    std::string iv_str  = "1234567890123456";
+
+    std::vector<uint8_t> key(key_str.begin(), key_str.end());
+    std::vector<uint8_t> iv(iv_str.begin(), iv_str.end());
+    std::vector<uint8_t> data(plaintext.begin(), plaintext.end());
+
+    auto ciphertext = cfb_encrypt(data, key, iv);
+
+    std::cout << "\nOriginal plaintext:\n";
+    std::cout << plaintext << "\n";
+
+    /* --------------------------------------------------
+       CFB malleability
+
+       Pi = Ci XOR AES(K, Ci-1)
+
+       Changing Ci flips the same bits in Pi
+    -------------------------------------------------- */
+
+    size_t pos = plaintext.find("user");
+
+    ciphertext[pos]     ^= ('u' ^ 'r');
+    ciphertext[pos + 1] ^= ('s' ^ 'o');
+    ciphertext[pos + 2] ^= ('e' ^ 'o');
+    ciphertext[pos + 3] ^= ('r' ^ 't');
+
+    /* manual decryption (no padding removal) */
+
+    auto blocks = split_blocks(ciphertext);
+
+    std::vector<std::vector<uint8_t>> decrypted_blocks;
+    std::vector<uint8_t> prev = iv;
+
+    for (const auto& block : blocks)
+    {
+        auto stream = aes_encrypt_block(prev, key);
+        auto plain  = xor_blocks(block, stream);
+
+        decrypted_blocks.push_back(plain);
+        prev = block;
+    }
+
+    auto merged = merge_blocks(decrypted_blocks);
+
+    std::string result(merged.begin(), merged.end());
+
+    std::cout << "\nPlaintext after attack:\n";
+    std::cout << result.substr(0, plaintext.size()) << "\n";
+}
 
 /* ======================
    CFB Mode Interface
@@ -85,9 +189,24 @@ void cfb_mode()
     int op;
 
     std::cout << "\nCFB Mode\n";
-    std::cout << "1. Encrypt\n2. Decrypt\n";
+    std::cout << "1. Encrypt\n";
+    std::cout << "2. Decrypt\n";
+    std::cout << "3. Show Error Propagation Demo\n";
+    std::cout << "4. Show Bit-Flipping Attack Demo\n";
 
     std::cin >> op;
+
+    if (op == 3)
+    {
+        cfb_error_demo();
+        return;
+    }
+
+    if (op == 4)
+    {
+        cfb_bitflip_demo();
+        return;
+    }
 
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
