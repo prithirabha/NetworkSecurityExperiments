@@ -63,7 +63,7 @@ Repository:   **[prithirabha/NetworkSecurityExperiments/03_ModesOfOperations](ht
 	├── README.md
 	└── REPORT.md
 
-```bash
+```
     
 ### Directory Description
 
@@ -106,7 +106,7 @@ Example utility operation:
 
 ```cpp
     result[i] = first_block[i] ^ second_block[i];
-````bash
+````
     
 ---
 
@@ -140,7 +140,7 @@ Encryption:
 
 ```bash
     Ci = AES(K, Pi)
-```bash
+```
     
 ### Weakness Demonstrated
 
@@ -163,7 +163,7 @@ Example output:
 	Block 2: e8c1351537a22cfde28bf297f4e1242d
 	Block 3: e8c1351537a22cfde28bf297f4e1242d
 	Block 4: 963a216d1799a1e9d15bad1444126f29
-```bash
+```
     
 Observation:
 
@@ -180,7 +180,7 @@ Encryption:
 
 ```bash
     Ci = AES(K, Pi ⊕ Ci−1)
-```bash
+```
     
 ### Demonstrated Weaknesses
 
@@ -195,7 +195,7 @@ Example demonstration:
 	
 	Decrypted after corruption:
 	AAAAAAAAAAAAAAAA, F[�@�U��N�-*cDAAAA�AAAAAAAAAAA
-```bash
+```
     
 * Bit-flipping attack
 
@@ -209,7 +209,7 @@ Example demonstration:
 	
 	Plaintext after attack:
 	role=root;access=limited;
-```bash
+```
     
 Observation:
 
@@ -226,7 +226,7 @@ Encryption:
 
 ```bash
     Ci = Pi ⊕ AES(K, Ci−1)
-```bash
+```
     
 Characteristics:
 
@@ -245,7 +245,8 @@ Example Demonstration:
 	
 	Plaintext after corruption:
 	AAAAAAAAAAAAAAAAAAAA�AAAAAAAAAAAC��M4 }j�c * �l
-```bash
+```
+
     * Malleability.
 ```bash
 	=== CFB Malleability Demo ===
@@ -255,7 +256,7 @@ Example Demonstration:
 	
 	Plaintext after attack:
 	access=limited;role=root
-```bash
+```
     
 
 Observation:
@@ -273,13 +274,13 @@ Keystream generation:
 
 ```bash
     Oi = AES(K, Oi−1)
-```bash
+```
     
 Encryption:
 
 ```bash
     Ci = Pi ⊕ Oi
-```bash
+```
     
 ### Weakness Demonstrated
 
@@ -303,7 +304,7 @@ Example Demonstration:
 	
 	P1 XOR P2:
 	000000000000000000000014040500000000
-```bash
+```
     
 * Malleability
 Example demonstration:
@@ -315,7 +316,7 @@ Example demonstration:
 	
 	Plaintext after attack:
 	role=root;access=limited;
-```bash
+```
     
 Observation:
 
@@ -332,13 +333,13 @@ Keystream:
 
 ```bash
     Oi = AES(K, nonce || counter)
-```bash
+```
     
 Encryption:
 
 ```bash
     Ci = Pi ⊕ Oi
-```bash
+```
     
 ### Weakness Demonstrated
 
@@ -359,7 +360,7 @@ Example demonstration:
 	
 	P1 XOR P2:
 	000000000000000000000014040500000000
-```bash
+```
     
 * Malleability
 
@@ -372,7 +373,7 @@ Example demonstration:
 	
 	Plaintext after attack:
 	role=root;access=limited;
-```bash
+```
     
 Observation:
 
@@ -403,7 +404,7 @@ Example menu:
 	5. CTR
 	0. Exit
 	Select mode:
-```bash
+```
     
 ---
 
