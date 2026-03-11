@@ -1,3 +1,8 @@
+<style>
+	body {
+            font-family: "Times New Roman", Times, serif;
+        }
+</style>
 # Implementation and Analysis of AES Modes of Operation
 
 ## Author
