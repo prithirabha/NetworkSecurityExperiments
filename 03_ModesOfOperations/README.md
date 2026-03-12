@@ -135,10 +135,10 @@ You may optionally run the project inside Docker instead of installing dependenc
 
 ## Docker Prerequisites
 
-Install:
+Install the following tools if they are not already available:
 
-* **Docker**
-* **Docker Compose (v2+)**
+* **Docker Engine** – https://docs.docker.com/engine/install/
+* **Docker Compose (v2+)** – https://docs.docker.com/compose/
 
 Verify installation:
 
