@@ -14,12 +14,11 @@ The following AES modes of operation were implemented:
 
 The following security properties and weaknesses were demonstrated:
 
-- ECB pattern leakage
-- CBC error propagation
-- CBC bit-flipping attack
-- CFB malleability
-- OFB keystream reuse
-- CTR nonce reuse
+- ECB Pattern leakage
+- CBC Error Propagation & Bit-flipping attack
+- CFB Error Propagation & Malleability
+- OFB Keystream reuse & Malleability
+- CTR Nonce reuse & Malleability
 
 ## Inputs Identified
 
