@@ -7,14 +7,25 @@ This project demonstrates the behavior, requirements, and weaknesses of common A
 ---
 
 ## Table of Contents
-- [Overview](#overview)
-- [Implemented Modes](#implemented-modes)
-- [Security Experiments](#security-experiments)
-- [Mode Inputs](#mode-inputs)
-- [Prerequisites](#prerequisites)
-- [Build Instructions](#build-instructions)
-- [Project Structure](#project-structure)
-- [Clean Build](#clean-build)
+
+* [Overview](#overview)
+* [Implemented Modes](#implemented-modes)
+* [Security Experiments](#security-experiments)
+* [Mode Inputs](#mode-inputs)
+* [Prerequisites](#prerequisites)
+
+  * [System Dependencies](#system-dependencies)
+  * [Install Dependencies](#install-dependencies)
+* [Build Instructions](#build-instructions)
+
+  * [Run the Program](#run-the-program)
+* [Docker (Optional)](#docker-optional)
+
+  * [Prerequisites](#docker-prerequisites)
+  * [Build the Image](#build-the-image)
+  * [Run with Docker Compose](#run-with-docker-compose)
+* [Project Structure](#project-structure)
+* [Clean Build](#clean-build)
 
 ---
 
@@ -30,11 +41,11 @@ Each mode is implemented using OpenSSL primitives and evaluated through experime
 
 The following AES modes are implemented:
 
-- **ECB** — Electronic Codebook  
-- **CBC** — Cipher Block Chaining  
-- **CFB** — Cipher Feedback  
-- **OFB** — Output Feedback  
-- **CTR** — Counter Mode  
+* **ECB** — Electronic Codebook
+* **CBC** — Cipher Block Chaining
+* **CFB** — Cipher Feedback
+* **OFB** — Output Feedback
+* **CTR** — Counter Mode
 
 ---
 
@@ -42,39 +53,43 @@ The following AES modes are implemented:
 
 The following cryptographic behaviors are demonstrated:
 
-- **ECB:** Pattern leakage
-- **CBC:** Error propagation and bit-flipping attack
-- **CFB:** Error propagation and malleability
-- **OFB:** Keystream reuse and malleability
-- **CTR:** Nonce reuse and malleability
+* **ECB:** Pattern leakage
+* **CBC:** Error propagation and bit-flipping attack
+* **CFB:** Error propagation and malleability
+* **OFB:** Keystream reuse and malleability
+* **CTR:** Nonce reuse and malleability
 
 ---
 
 ## Mode Inputs
 
-| Mode | Required Inputs |
-|-----|----------------|
-| ECB | plaintext, key |
-| CBC | plaintext, key, IV |
-| CFB | plaintext, key, IV |
-| OFB | plaintext, key, IV |
-| CTR | plaintext, key, nonce, counter |
+| Mode | Required Inputs                |
+| ---- | ------------------------------ |
+| ECB  | plaintext, key                 |
+| CBC  | plaintext, key, IV             |
+| CFB  | plaintext, key, IV             |
+| OFB  | plaintext, key, IV             |
+| CTR  | plaintext, key, nonce, counter |
 
 ---
 
-## Prerequisites
+# Prerequisites
+
+## System Dependencies
 
 Ensure the following tools are installed:
 
-- **C++ compiler with C++23 support** (e.g., `g++`)
-- **Make**
-- **OpenSSL development libraries (`libcrypto`)**
+* **C++ compiler with C++23 support** (e.g., `g++`)
+* **Make**
+* **OpenSSL development libraries (`libcrypto`)**
+
+## Install Dependencies
 
 ### Ubuntu / Debian
 
 ```bash
 sudo apt install build-essential make libssl-dev
-````
+```
 
 ### Arch
 
@@ -90,7 +105,7 @@ brew install openssl
 
 ---
 
-## Build Instructions
+# Build Instructions
 
 Compile the project using `make`:
 
@@ -104,15 +119,58 @@ This will generate the executable:
 aes_modes
 ```
 
-Run it with:
+## Run the Program
 
 ```bash
 ./aes_modes
 ```
 
+The program runs **interactively** and will prompt for the required inputs depending on the selected AES mode.
+
 ---
 
-## Project Structure
+# Docker (Optional)
+
+You may optionally run the project inside Docker instead of installing dependencies locally.
+
+## Docker Prerequisites
+
+Install:
+
+* **Docker**
+* **Docker Compose (v2+)**
+
+Verify installation:
+
+```bash
+docker --version
+docker compose version
+```
+
+## Build the Image
+
+```bash
+docker compose build
+```
+
+## Run with Docker Compose
+
+```bash
+docker compose run --rm aes-modes
+```
+
+This will:
+
+1. Start an interactive container
+2. Run `make clean`
+3. Rebuild the project
+4. Launch the `aes_modes` program
+
+No cleanup is required because the container is automatically removed.
+
+---
+
+# Project Structure
 
 ```
 .
@@ -132,7 +190,7 @@ Run it with:
 
 ---
 
-## Clean Build
+# Clean Build
 
 Remove the compiled binary:
 
