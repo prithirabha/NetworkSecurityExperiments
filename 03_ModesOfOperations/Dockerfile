@@ -1,17 +1,28 @@
-FROM debian:bookworm-slim
+# ---------- build stage ----------
+FROM debian:bookworm-slim AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
-    apt-get install -y \
-        build-essential \
-        make \
-        g++ \
-        libssl-dev && \
+    apt-get install -y build-essential libssl-dev && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 COPY . .
 
-CMD bash -c "make clean && make && ./aes_modes"
+RUN make
+
+
+# ---------- runtime stage ----------
+FROM debian:bookworm-slim
+
+RUN apt-get update && \
+    apt-get install -y libssl3 && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY --from=builder /app/aes_modes .
+
+CMD ["./aes_modes"]
