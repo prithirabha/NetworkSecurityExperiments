@@ -1,5 +1,10 @@
 # AES Modes of Operation
 
+![C++23](https://img.shields.io/badge/C%2B%2B-23-blue?logo=cplusplus)
+![OpenSSL](https://img.shields.io/badge/OpenSSL-libcrypto-green?logo=openssl)
+![Build](https://img.shields.io/badge/build-make-orange?logo=gnu)
+![Docker](https://img.shields.io/badge/docker-supported-2496ED?logo=docker&logoColor=white)
+
 Implementation and experimentation with multiple **AES block cipher modes of operation** using **OpenSSL's libcrypto** in C++.
 
 This project demonstrates the behavior, requirements, and weaknesses of common AES modes.
