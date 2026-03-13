@@ -178,19 +178,29 @@ No cleanup is required because the container is automatically removed.
 # Project Structure
 
 ```
-.
-├── Makefile
-├── README.md
-├── main.cpp
+03_ModesOfOperations/
+├── aes
+│   ├── aes_wrapper.cpp
+│   └── aes_wrapper.hpp
 ├── crypto_utils.cpp
-├── aes/
-│   └── aes_wrapper.cpp
-└── modes/
-    ├── ecb.cpp
-    ├── cbc.cpp
-    ├── cfb.cpp
-    ├── ofb.cpp
-    └── ctr.cpp
+├── crypto_utils.hpp
+├── docker-compose.yml
+├── Dockerfile
+├── main.cpp
+├── Makefile
+├── modes
+│   ├── cbc.cpp
+│   ├── cbc.hpp
+│   ├── cfb.cpp
+│   ├── cfb.hpp
+│   ├── ctr.cpp
+│   ├── ctr.hpp
+│   ├── ecb.cpp
+│   ├── ecb.hpp
+│   ├── ofb.cpp
+│   └── ofb.hpp
+├── README.md
+└── REPORT.md
 ```
 
 ---
