@@ -1,10 +1,5 @@
 services:
   aes-modes:
     build: .
-    container_name: aes_modes
-    working_dir: /app
-    volumes:
-      - .:/app
     stdin_open: true
     tty: true
-    command: bash -c "make clean && make && ./aes_modes"
