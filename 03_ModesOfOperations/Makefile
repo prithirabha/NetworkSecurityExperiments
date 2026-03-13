@@ -12,10 +12,15 @@ SRC = main.cpp \
       modes/ofb.cpp \
       modes/ctr.cpp
 
-$(TARGET): $(SRC)
-	$(CXX) $(CXXFLAGS) $(SRC) -lcrypto -o $(TARGET)
+OBJ = $(SRC:.cpp=.o)
+
+$(TARGET): $(OBJ)
+	$(CXX) $(CXXFLAGS) $(OBJ) -lcrypto -o $(TARGET)
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(TARGET)
+	rm -f $(OBJ) $(TARGET)
 
 .PHONY: clean
