@@ -3,23 +3,15 @@
 ## Description
 
 Small project to explore authentication mechanisms and their security properties.
+
 Focus areas:
 
-* Implement **JWT authentication**
-* Analyze common **JWT attack vectors**
-* Implement **WebAuthn authentication**
-* Compare **symmetric vs asymmetric authentication cost**
+* Implement JWT authentication
+* Analyze common JWT attack vectors
+* Implement WebAuthn authentication
+* Compare symmetric vs asymmetric authentication cost
 
-Technology stack is **not fixed yet** (C++ preferred where possible).
-
----
-
-## Table of Contents
-
-* [Tasks](#tasks)
-* [JWT](#jwt)
-* [WebAuthn](#webauthn)
-* [Notes](#notes)
+Technology stack: **Go**
 
 ---
 
@@ -43,18 +35,6 @@ Technology stack is **not fixed yet** (C++ preferred where possible).
 
 ---
 
-## JWT
-
-*To be expanded.*
-
----
-
-## WebAuthn
-
-*To be expanded.*
-
----
-
 ## Notes
 
-*To be filled during development.*
+To be filled during development.
