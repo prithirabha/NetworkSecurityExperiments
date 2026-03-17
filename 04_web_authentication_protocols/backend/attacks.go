@@ -12,13 +12,13 @@ func AttackNone(c *gin.Context) {
 
 	token := "eyJhbGciOiJub25lIn0.eyJ1c2VybmFtZSI6InVzZXIifQ."
 
-	if VerifyJWT(token, true) {
+	if VerifySecureJWT(token) {
 		AddLog("Secure verification accepted")
 	} else {
 		AddLog("Secure verification rejected")
 	}
 
-	if VerifyJWT(token, false) {
+	if VerifyInsecureJWT(token) {
 		AddLog("Vulnerable verification accepted")
 		AddLog("Attack successful")
 	}
@@ -30,7 +30,7 @@ func AttackBruteforce(c *gin.Context) {
 
 	dict := []string{"password", "admin", "secret", "12345", "jwtsecret"}
 
-	token, _ := GenerateJWT("user")
+	token, _ := GenerateSecureJWT("user")
 
 	for _, s := range dict {
 
@@ -47,13 +47,13 @@ func AttackBruteforce(c *gin.Context) {
 
 func AttackReplay(c *gin.Context) {
 
-	token, _ := GenerateJWT("user")
+	token, _ := GenerateSecureJWT("user")
 
 	AddLog("Captured JWT token")
 
 	for i := 1; i <= 3; i++ {
 
-		if VerifyJWT(token, true) {
+		if VerifySecureJWT(token) {
 			AddLog("Replay request success")
 		}
 	}
@@ -66,7 +66,7 @@ func AttackReplay(c *gin.Context) {
 
 func AttackExpired(c *gin.Context) {
 
-	token, _ := GenerateJWT("user")
+	token, _ := GenerateSecureJWT("user")
 
 	AddLog("Token generated")
 	AddLog("Waiting for expiration")
@@ -75,11 +75,11 @@ func AttackExpired(c *gin.Context) {
 
 	AddLog("Token expired")
 
-	if !VerifyJWT(token, true) {
+	if !VerifySecureJWT(token) {
 		AddLog("Secure verification rejected token")
 	}
 
-	if VerifyJWT(token, false) {
+	if VerifyInsecureJWT(token) {
 		AddLog("Vulnerable verification accepted expired token")
 		AddLog("Attack successful")
 	}

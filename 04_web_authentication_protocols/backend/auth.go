@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func LoginHandler(c *gin.Context) {
+func Login(c *gin.Context) {
 
 	var req struct {
 		Username string `json:"username"`
@@ -17,9 +17,10 @@ func LoginHandler(c *gin.Context) {
 
 	if req.Username == "user" && req.Password == "password" {
 
-		token, _ := GenerateJWT(req.Username)
+		token, _ := GenerateSecureJWT(req.Username)
 
-		AddLog("User logged in successfully")
+		AddLog("User login successful")
+		AddLog("JWT issued")
 
 		c.JSON(200, gin.H{
 			"token": token,
@@ -34,22 +35,3 @@ func LoginHandler(c *gin.Context) {
 		"error": "invalid credentials",
 	})
 }
-
-func ProtectedHandler(c *gin.Context) {
-
-	token := c.GetHeader("Authorization")
-
-	valid := VerifyJWT(token, true)
-
-	if !valid {
-		AddLog("Protected endpoint access denied")
-		c.JSON(401, gin.H{"error": "unauthorized"})
-		return
-	}
-
-	AddLog("Protected endpoint accessed")
-
-	c.JSON(200, gin.H{
-		"message": "protected data",
-	})
-}	

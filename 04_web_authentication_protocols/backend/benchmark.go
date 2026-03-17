@@ -8,12 +8,12 @@ import (
 
 func RunBenchmark(c *gin.Context) {
 
-	token, _ := GenerateJWT("user")
+	token, _ := GenerateSecureJWT("user")
 
 	start := time.Now()
 
 	for i := 0; i < 100; i++ {
-		VerifyJWT(token, true)
+		VerifySecureJWT(token)
 	}
 
 	jwtTime := time.Since(start)

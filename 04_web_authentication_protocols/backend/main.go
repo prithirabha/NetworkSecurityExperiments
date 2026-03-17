@@ -21,8 +21,10 @@ func main() {
 		c.HTML(http.StatusOK, "dashboard.html", nil)
 	})
 
-	r.POST("/login", LoginHandler)
-	r.GET("/protected", ProtectedHandler)
+	r.POST("/login", Login)
+
+	r.GET("/protected/secure", ProtectedSecure)
+	r.GET("/protected/insecure", ProtectedInsecure)
 
 	r.POST("/attack/none", AttackNone)
 	r.POST("/attack/bruteforce", AttackBruteforce)
