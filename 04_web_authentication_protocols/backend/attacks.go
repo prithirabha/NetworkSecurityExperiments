@@ -2,25 +2,35 @@ package main
 
 import (
 	"time"
+	"encoding/base64"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
 
 func AttackNone(c *gin.Context) {
 
-	AddLog("Forged token created with alg=none")
+	AddLog("Creating forged token with alg=none")
 
-	token := "eyJhbGciOiJub25lIn0.eyJ1c2VybmFtZSI6InVzZXIifQ."
+	header := `{"alg":"none","typ":"JWT"}`
+	payload := `{"username":"attacker","iat":0}`
+
+	h := base64.RawURLEncoding.EncodeToString([]byte(header))
+	p := base64.RawURLEncoding.EncodeToString([]byte(payload))
+
+	token := h + "." + p + "."
+
+	AddLog("Forged token: " + token)
 
 	if VerifySecureJWT(token) {
-		AddLog("Secure verification accepted")
+		AddLog("Secure verification accepted token")
 	} else {
-		AddLog("Secure verification rejected")
+		AddLog("Secure verification rejected token")
 	}
 
 	if VerifyInsecureJWT(token) {
-		AddLog("Vulnerable verification accepted")
-		AddLog("Attack successful")
+		AddLog("Vulnerable verification accepted token")
+		AddLog("NONE algorithm attack successful")
 	}
 
 	c.JSON(200, gin.H{"status": "none attack executed"})
@@ -49,17 +59,21 @@ func AttackReplay(c *gin.Context) {
 
 	token, _ := GenerateSecureJWT("user")
 
-	AddLog("Captured JWT token")
+	AddLog("Captured JWT token: " + token)
 
 	for i := 1; i <= 3; i++ {
 
-		if VerifySecureJWT(token) {
-			AddLog("Replay request success")
+		ok := VerifySecureJWT(token)
+
+		if ok {
+			AddLog(fmt.Sprintf("Replay request %d → access granted", i))
+		} else {
+			AddLog(fmt.Sprintf("Replay request %d → access denied", i))
 		}
 	}
 
 	AddLog("Replay protection not implemented")
-	AddLog("Attack successful")
+	AddLog("Replay attack successful")
 
 	c.JSON(200, gin.H{"status": "replay executed"})
 }
@@ -89,10 +103,17 @@ func AttackExpired(c *gin.Context) {
 
 func AttackXSS(c *gin.Context) {
 
-	AddLog("Executing malicious script")
-	AddLog("localStorage.getItem('token')")
-	AddLog("JWT token stolen")
-	AddLog("Attacker can impersonate user")
+	var req struct {
+		Token string `json:"token"`
+	}
+
+	c.BindJSON(&req)
+
+	AddLog("Malicious script executed")
+	AddLog("Token stolen from localStorage:")
+	AddLog(req.Token)
+
+	AddLog("Attacker can now impersonate the user")
 
 	c.JSON(200, gin.H{"status": "xss executed"})
 }

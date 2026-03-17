@@ -68,6 +68,19 @@ function runAttack(name) {
     fetch("/attack/" + name, { method: "POST" });
 }
 
+function simulateXSS(){
+
+    let stolen = localStorage.getItem("token")
+
+    fetch("/attack/xss",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({token:stolen})
+    })
+
+}
+
+
 function runBenchmark() {
     fetch("/benchmark")
         .then(r => r.json())

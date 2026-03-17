@@ -1,5 +1,7 @@
 package main
 
+import "github.com/golang-jwt/jwt/v5"
+
 var Users map[string]string
 var Logs []string
 
@@ -12,9 +14,13 @@ func InitStore() {
 	Logs = []string{}
 }
 
-func TrySecret(token string, secret string) bool {
+func TrySecret(tokenString string, secret string) bool {
 
-	if secret == "12345" {
+	_, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
+		return []byte(secret), nil
+	})
+
+	if err == nil {
 		return true
 	}
 
