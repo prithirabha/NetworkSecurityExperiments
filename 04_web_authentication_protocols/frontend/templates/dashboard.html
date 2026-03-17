@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Authentication Security Lab</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <h1>Authentication Security Lab</h1>
+
+    <div class="grid">
+
+        <div class="panel">
+            <h2>Login</h2>
+            <input id="username" value="user">
+            <input id="password" value="password">
+            <button onclick="login()">Login</button>
+        </div>
+
+        <div class="panel">
+            <h2>JWT Viewer</h2>
+            <pre id="header"></pre>
+            <pre id="payload"></pre>
+            <pre id="signature"></pre>
+        </div>
+
+        <div class="panel">
+            <h2>Attack Simulation</h2>
+            <button onclick="runAttack('none')">NONE Attack</button>
+            <button onclick="runAttack('bruteforce')">Bruteforce</button>
+            <button onclick="runAttack('replay')">Replay</button>
+            <button onclick="runAttack('expired')">Expired</button>
+            <button onclick="runAttack('xss')">XSS</button>
+        </div>
+
+        <div class="panel">
+            <h2>Benchmark</h2>
+            <canvas id="chart"></canvas>
+            <button onclick="runBenchmark()">Run Benchmark</button>
+        </div>
+
+    </div>
+
+    <h2>Attack Logs</h2>
+    <div id="logs"></div>
+
+    <script src="/static/app.js"></script>
+
+</body>
+</html>
