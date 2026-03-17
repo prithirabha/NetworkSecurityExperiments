@@ -11,6 +11,7 @@ func main() {
 
 	InitStore()
 	InitLogger()
+	InitWebAuthn()
 
 	r := gin.Default()
 
@@ -26,14 +27,17 @@ func main() {
 	r.GET("/protected/secure", ProtectedSecure)
 	r.GET("/protected/insecure", ProtectedInsecure)
 
+	r.POST("/webauthn/register", WebAuthnRegister)
+	r.POST("/webauthn/register/finish", WebAuthnRegisterFinish)
+
+	r.POST("/webauthn/login", WebAuthnLogin)
+	r.POST("/webauthn/login/finish", WebAuthnLoginFinish)
+
 	r.POST("/attack/none", AttackNone)
 	r.POST("/attack/bruteforce", AttackBruteforce)
 	r.POST("/attack/replay", AttackReplay)
 	r.POST("/attack/expired", AttackExpired)
 	r.POST("/attack/xss", AttackXSS)
-
-	r.POST("/webauthn/register", WebAuthnRegister)
-	r.POST("/webauthn/login", WebAuthnLogin)
 
 	r.GET("/benchmark", RunBenchmark)
 

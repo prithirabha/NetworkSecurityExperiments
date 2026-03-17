@@ -1,6 +1,12 @@
 package main
 
 import (
+	"crypto/ecdsa"
+	"crypto/elliptic"
+	"crypto/hmac"
+	"crypto/rand"
+	"crypto/sha256"
+	"fmt"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -8,28 +14,61 @@ import (
 
 func RunBenchmark(c *gin.Context) {
 
-	token, _ := GenerateSecureJWT("user")
+	message := []byte("authentication challenge")
+
+	// -----------------------------
+	// Symmetric Authentication Cost
+	// HMAC-SHA256
+	// -----------------------------
+
+	secret := []byte("shared-secret-key")
 
 	start := time.Now()
 
-	for i := 0; i < 100; i++ {
-		VerifySecureJWT(token)
+	for i := 0; i < 10000; i++ {
+
+		mac := hmac.New(sha256.New, secret)
+		mac.Write(message)
+		_ = mac.Sum(nil)
+
 	}
 
-	jwtTime := time.Since(start)
+	symTime := time.Since(start)
+	symAvg := symTime.Microseconds() / 10000
+
+	AddLog(fmt.Sprintf("Symmetric Auth (HMAC-SHA256) Avg: %d µs", symAvg))
+
+	// --------------------------------
+	// Asymmetric Authentication Cost
+	// ECDSA P-256 (WebAuthn equivalent)
+	// --------------------------------
+
+	privateKey, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+
+	hash := sha256.Sum256(message)
+
+	r, s, _ := ecdsa.Sign(rand.Reader, privateKey, hash[:])
 
 	start = time.Now()
 
-	for i := 0; i < 100; i++ {
-		time.Sleep(time.Millisecond * 10)
+	for i := 0; i < 10000; i++ {
+
+		ecdsa.Verify(
+			&privateKey.PublicKey,
+			hash[:],
+			r,
+			s,
+		)
+
 	}
 
-	webauthTime := time.Since(start)
+	asymTime := time.Since(start)
+	asymAvg := asymTime.Microseconds() / 10000
 
-	AddLog("Benchmark completed")
+	AddLog(fmt.Sprintf("Asymmetric Auth (ECDSA-P256) Avg: %d µs", asymAvg))
 
 	c.JSON(200, gin.H{
-		"jwt":     jwtTime.Milliseconds(),
-		"webauth": webauthTime.Milliseconds(),
+		"symmetric":  symAvg,
+		"asymmetric": asymAvg,
 	})
 }

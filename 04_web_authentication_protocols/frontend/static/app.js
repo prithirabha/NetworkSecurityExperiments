@@ -80,6 +80,92 @@ function simulateXSS(){
 
 }
 
+function base64ToArrayBuffer(base64url) {
+
+    // Convert Base64URL → Base64
+    let base64 = base64url
+        .replace(/-/g, "+")
+        .replace(/_/g, "/")
+
+    // Pad if necessary
+    while (base64.length % 4 !== 0) {
+        base64 += "="
+    }
+
+    const binary = atob(base64)
+
+    const bytes = new Uint8Array(binary.length)
+
+    for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i)
+    }
+
+    return bytes.buffer
+}
+
+function arrayBufferToBase64(buffer) {
+    const bytes = new Uint8Array(buffer);
+    let binary = "";
+    for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+}
+
+async function registerPasskey(){
+
+    let res = await fetch("/webauthn/register",{method:"POST"})
+    let options = await res.json()
+
+    options.publicKey.challenge = base64ToArrayBuffer(options.publicKey.challenge)
+    options.publicKey.user.id = base64ToArrayBuffer(options.publicKey.user.id)
+
+    let credential = await navigator.credentials.create(options)
+
+    await fetch("/webauthn/register/finish",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify(credential)
+    })
+}
+
+async function loginPasskey() {
+
+    const res = await fetch("/webauthn/login", { method: "POST" });
+    const options = await res.json();
+
+    options.challenge = base64ToArrayBuffer(options.challenge);
+
+    if (options.allowCredentials) {
+        options.allowCredentials = options.allowCredentials.map(c => ({
+            ...c,
+            id: base64ToArrayBuffer(c.id)
+        }));
+    }
+
+    navigator.credentials.get(options);
+
+    const data = {
+        id: credential.id,
+        rawId: arrayBufferToBase64(credential.rawId),
+        type: credential.type,
+        response: {
+            authenticatorData: arrayBufferToBase64(credential.response.authenticatorData),
+            clientDataJSON: arrayBufferToBase64(credential.response.clientDataJSON),
+            signature: arrayBufferToBase64(credential.response.signature),
+            userHandle: credential.response.userHandle
+                ? arrayBufferToBase64(credential.response.userHandle)
+                : null
+        }
+    };
+
+    await fetch("/webauthn/login/finish", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    });
+}
+
 
 function runBenchmark() {
     fetch("/benchmark")
@@ -88,11 +174,11 @@ function runBenchmark() {
             new Chart(document.getElementById("chart"), {
                 type: "bar",
                 data: {
-                    labels: ["JWT", "WebAuthn"],
+                    labels: ["Symmetric WebAuth", "Asymmetric WebAuth"],
                     datasets: [
                         {
                             label: "ms",
-                            data: [d.jwt, d.webauth]
+                            data: [d.symmetric, d.asymmetric]
                         }
                     ]
                 }
