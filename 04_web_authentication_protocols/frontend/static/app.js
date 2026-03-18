@@ -167,20 +167,45 @@ async function loginPasskey() {
 }
 
 
+let chartInstance = null;
+
 function runBenchmark() {
     fetch("/benchmark")
         .then(r => r.json())
         .then(d => {
-            new Chart(document.getElementById("chart"), {
-                type: "bar",
+
+            // 🔥 destroy previous chart (IMPORTANT)
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            const ctx = document.getElementById("chart").getContext("2d");
+
+            chartInstance = new Chart(ctx, {
+                type: "logarithmic",
                 data: {
-                    labels: ["Symmetric WebAuth", "Asymmetric WebAuth"],
-                    datasets: [
-                        {
-                            label: "ms",
-                            data: [d.symmetric_ms, d.asymmetric_ms]
+                    labels: ["Symmetric", "Asymmetric"],
+                    datasets: [{
+                        label: "µs",
+                        data: [
+                            Number(d.symmetric_us),
+                            Number(d.asymmetric_us)
+                        ]
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: d.asymmetric_us * 1.2
                         }
-                    ]
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: `Asymmetric is ${d.ratio.toFixed(1)}x slower`
+                        }
+                    }
                 }
             });
         });
