@@ -19,16 +19,16 @@ Technology stack: **Go**
 
 ### JWT
 
-* [ ] Implement JWT authentication
-* [ ] None algorithm attack analysis
-* [ ] Secret key brute force analysis
-* [ ] Token replay analysis
-* [ ] Expiry validation analysis
-* [ ] Local storage risk analysis
+* [x] Implement JWT authentication
+* [x] None algorithm attack analysis
+* [x] Secret key brute force analysis
+* [x] Token replay analysis
+* [x] Expiry validation analysis
+* [x] Local storage risk analysis
 
 ### WebAuthn
 
-* [ ] Implement WebAuthn authentication
+* [x] Implement WebAuthn authentication
 * [ ] Registration flow
 * [ ] Authentication flow
 * [ ] Compare symmetric vs asymmetric authentication cost
