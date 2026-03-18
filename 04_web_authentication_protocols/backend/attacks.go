@@ -113,7 +113,25 @@ func AttackXSS(c *gin.Context) {
 	AddLog("Token stolen from localStorage:")
 	AddLog(req.Token)
 
-	AddLog("Attacker can now impersonate the user")
+	// Try secure verification
+	if VerifySecureJWT(req.Token) {
+
+		AddLog("Using stolen token to access protected resource")
+		AddLog("Access granted")
+		AddLog("Attacker successfully impersonated the user")
+
+	} else {
+
+		AddLog("Token invalid or expired")
+
+		if VerifyInsecureJWT(req.Token) {
+			AddLog("Vulnerable verification accepted token")
+			AddLog("Attacker still able to impersonate user")
+		}
+	}
+
+	AddLog("This attack works because JWT is stored in localStorage")
+	AddLog("Mitigation: Use HttpOnly cookies instead")
 
 	c.JSON(200, gin.H{"status": "xss executed"})
 }
