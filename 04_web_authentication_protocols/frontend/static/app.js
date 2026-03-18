@@ -132,18 +132,20 @@ async function registerPasskey(){
 async function loginPasskey() {
 
     const res = await fetch("/webauthn/login", { method: "POST" });
-    const options = await res.json();
+    let options = await res.json();
 
-    options.challenge = base64ToArrayBuffer(options.challenge);
+    options.publicKey.challenge = base64ToArrayBuffer(options.publicKey.challenge);
 
-    if (options.allowCredentials) {
-        options.allowCredentials = options.allowCredentials.map(c => ({
+    if (options.publicKey.allowCredentials) {
+        options.publicKey.allowCredentials = options.publicKey.allowCredentials.map(c => ({
             ...c,
             id: base64ToArrayBuffer(c.id)
         }));
     }
 
-    navigator.credentials.get(options);
+    const credential = await navigator.credentials.get({
+        publicKey: options.publicKey
+    });
 
     const data = {
         id: credential.id,
@@ -174,7 +176,6 @@ function runBenchmark() {
         .then(r => r.json())
         .then(d => {
 
-            // 🔥 destroy previous chart (IMPORTANT)
             if (chartInstance) {
                 chartInstance.destroy();
             }
@@ -182,22 +183,22 @@ function runBenchmark() {
             const ctx = document.getElementById("chart").getContext("2d");
 
             chartInstance = new Chart(ctx, {
-                type: "logarithmic",
+                type: "bar", 
                 data: {
                     labels: ["Symmetric", "Asymmetric"],
                     datasets: [{
-                        label: "µs",
+                        label: "ms",
                         data: [
-                            Number(d.symmetric_us),
-                            Number(d.asymmetric_us)
+                            Number(d.symmetric_ms),
+                            Number(d.asymmetric_ms)
                         ]
                     }]
                 },
                 options: {
                     scales: {
                         y: {
-                            beginAtZero: true,
-                            max: d.asymmetric_us * 1.2
+                            type: "logarithmic", 
+                            beginAtZero: false
                         }
                     },
                     plugins: {
