@@ -28,11 +28,45 @@
 
         <div class="panel">
             <h2>Attack Simulation</h2>
-            <button onclick="runAttack('none')">NONE Attack</button>
-            <button onclick="runAttack('bruteforce')">Bruteforce</button>
-            <button onclick="runAttack('replay')">Replay</button>
-            <button onclick="runAttack('expired')">Expired</button>
-            <button onclick="runAttack('xss')">XSS</button>
+
+            <div class="nav">
+                <button onclick="showAttack('none')">NONE</button>
+                <button onclick="showAttack('bruteforce')">Bruteforce</button>
+                <button onclick="showAttack('replay')">Replay</button>
+                <button onclick="showAttack('expired')">Expired</button>
+                <button onclick="showAttack('xss')">XSS</button>
+            </div>
+
+            <div id="attack-none" class="attack-section">
+                <h3>NONE Algorithm Attack</h3>
+                <p>Forge JWT with alg=none and remove signature</p>
+                <button onclick="runAttack('none')">Run Attack</button>
+            </div>
+
+            <div id="attack-bruteforce" class="attack-section" style="display:none">
+                <h3>Bruteforce Attack</h3>
+                <p>Try dictionary to find secret key</p>
+                <button onclick="runAttack('bruteforce')">Run Attack</button>
+            </div>
+
+            <div id="attack-replay" class="attack-section" style="display:none">
+                <h3>Replay Attack</h3>
+                <p>Reuse captured JWT multiple times</p>
+                <button onclick="runAttack('replay')">Run Attack</button>
+            </div>
+
+            <div id="attack-expired" class="attack-section" style="display:none">
+                <h3>Expired Token Attack</h3>
+                <p>Use expired token in vulnerable mode</p>
+                <button onclick="runAttack('expired')">Run Attack</button>
+            </div>
+
+            <div id="attack-xss" class="attack-section" style="display:none">
+                <h3>XSS Attack</h3>
+                <p>Steal token from localStorage</p>
+                <button onclick="simulateXSS()">Run Attack</button>
+            </div>
+
         </div>
 
         <div class="panel">

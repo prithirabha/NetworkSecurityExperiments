@@ -220,4 +220,13 @@ function pollLogs() {
         });
 }
 
+function showAttack(name) {
+
+    const sections = document.querySelectorAll(".attack-section");
+
+    sections.forEach(s => s.style.display = "none");
+
+    document.getElementById("attack-" + name).style.display = "block";
+}
+
 setInterval(pollLogs, 1000);
