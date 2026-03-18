@@ -178,7 +178,7 @@ function runBenchmark() {
                     datasets: [
                         {
                             label: "ms",
-                            data: [d.symmetric, d.asymmetric]
+                            data: [d.symmetric_ms, d.asymmetric_ms]
                         }
                     ]
                 }
